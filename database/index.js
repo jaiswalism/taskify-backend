@@ -13,8 +13,7 @@ const TodoSchema = new mongoose.Schema({
     description: String,
     tag: String,
     deadline: Date,
-    section: String,
-    done: Boolean 
+    section: String
 })
 
 const UserSchema = new mongoose.Schema({
