@@ -6,7 +6,6 @@ function userMiddleware(req, res, next) {
     // Auth logic
     try{
         const token = req.headers.token;
-        console.log("token: " + token)
         req.token = token
         const verifiedId = jwt.verify(token, SECRET);
 

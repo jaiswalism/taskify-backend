@@ -8,10 +8,13 @@ Taskify Backend is a secure RESTful API built with **Express.js** and **MongoDB*
 
 - **User Authentication:**  
   - Signup and login with JWT-based session management.
+  - Passwords are securely hashed with bcrypt.
+  - Input validation with Zod for strong security.
   - All protected routes require a valid token.
 
 - **Task Management:**  
   - Create, read, update, and delete your own tasks.
+  - Strict validation for all fields and enums.
   - Each task supports title, description, priority tag, deadline, status (section), and done flag.
   - Fetch all tasks or a specific task by ID.
 
@@ -27,6 +30,8 @@ Taskify Backend is a secure RESTful API built with **Express.js** and **MongoDB*
 - **Node.js** & **Express.js** – Core server and routing
 - **MongoDB** & **Mongoose** – Database and models
 - **jsonwebtoken** – JWT authentication
+- **bcrypt** – Password hashing
+- **zod** – Input validation
 - **dotenv** – Environment configuration
 - **cors** – Cross-origin support
 
@@ -141,3 +146,4 @@ All protected routes require a valid JWT token in the `Authorization` header.
 - Make sure MongoDB is running and accessible.
 - This backend is designed to work seamlessly with the [Taskify Frontend](https://github.com/jaiswalism/taskify-frontend).
 - See `.env.example` for required environment variables.
+- All input is validated and passwords are securely hashed for your safety.

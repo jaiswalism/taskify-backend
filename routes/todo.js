@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const adminMiddleware = require("../middleware/user");
 const router = Router();
+const { z } = require('zod');
 
 const { Todo } = require("../database/index");
 
@@ -8,6 +9,22 @@ const { Todo } = require("../database/index");
 router.post("/", adminMiddleware, async (req, res) => {
   // Todo creation logic
   try {
+    const validateBody = z.object({
+      title : z.string().min(3).max(50),
+      description : z.string().min(3).max(100),
+      tag : z.enum(["Low", "Medium", "High"]),
+      deadline : z.string(),
+      section : z.enum(["todo", "inProgress", "underReview", "finished"]) 
+    })
+
+    const parsedBody = validateBody.safeParse(req.body);
+    if(!parsedBody.success){
+      res.status(400).json({
+        error: parsedBody.error.issues[0].message
+      })
+      return
+    }
+
     const userId = req.userId;
     const title = req.body.title;
     const description = req.body.description;
@@ -35,7 +52,26 @@ router.post("/", adminMiddleware, async (req, res) => {
 router.put("/", adminMiddleware, async (req, res) => {
   // Update todo  logic
   try {
+    const validateBody = z.object({
+      title : z.string().min(3).max(50),
+      description : z.string().min(3).max(100),
+      newTitle : z.string().min(3).max(50),
+      newDescription : z.string().min(3).max(100),
+      newTag : z.enum(["Low", "Medium", "High"]),
+      newDeadline : z.string(),
+      newSection : z.enum(["todo", "inProgress", "underReview", "finished"]) 
+    })
+
+    const parsedBody = validateBody.safeParse(req.body);
+    if(!parsedBody.success){
+      res.status(400).json({
+        error: parsedBody.error.issues[0].message
+      })
+      return
+    }
+
     const userId = req.userId;
+
     const title = req.body.title;
     const description = req.body.description;
     
@@ -44,8 +80,7 @@ router.put("/", adminMiddleware, async (req, res) => {
     const newTag = req.body.newTag;
     const newDeadline = req.body.newDeadline;
     const newSection = req.body.newSection;
-    
-    // const done = req.body.done;
+
 
     await Todo.updateOne(
       {
@@ -60,7 +95,6 @@ router.put("/", adminMiddleware, async (req, res) => {
           tag: newTag,
           deadline: newDeadline,
           section: newSection,
-          // done: done
         },
       }
     );
@@ -75,6 +109,20 @@ router.put("/", adminMiddleware, async (req, res) => {
 router.delete("/", adminMiddleware, async (req, res) => {
   // Delete todo logic
   try {
+    const validateBody = z.object({
+      title : z.string().min(3).max(50),
+      description : z.string().min(3).max(100),
+      tag : z.enum(["Low", "Medium", "High"]),
+    })
+
+    const parsedBody = validateBody.safeParse(req.body);
+    if(!parsedBody.success){
+      res.status(400).json({
+        error: parsedBody.error.issues[0].message
+      })
+      return
+    }
+
     const userId = req.userId;
     const title = req.body.title;
     const description = req.body.description;
@@ -97,6 +145,18 @@ router.delete("/", adminMiddleware, async (req, res) => {
 router.delete("/:id", adminMiddleware, async (req, res) => {
   // Delete todo by id logic
   try {
+    const validateParams = z.object({
+      id: z.string().length(24)
+    })
+
+    const parsedParams = validateParams.safeParse(req.params);
+    if(!parsedParams.success){
+      res.status(400).json({
+        error: parsedParams.error.issues[0].message
+      })
+      return
+    }
+
     const userId = req.userId;
     const todoId = req.params.id;
 
@@ -125,7 +185,7 @@ router.get("/", adminMiddleware, async (req, res) => {
       userId: userId,
     });
 
-    res.status(201).send(todoItems);
+    res.status(200).send(todoItems);
   } catch (err) {
     res.status(503).json({ message: "Failed to get todos!" });
     // console.log(err)
@@ -135,7 +195,18 @@ router.get("/", adminMiddleware, async (req, res) => {
 router.get("/:id", adminMiddleware, async (req, res) => {
   // Fetching todo by id logic
   try {
-    const userId = req.userId;
+    const validateParams = z.object({
+      id: z.string().length(24)
+    })
+
+    const parsedParams = validateParams.safeParse(req.params);
+    if(!parsedParams.success){
+      res.status(400).json({
+        error: parsedParams.error.issues[0].message
+      })
+      return
+    }
+
     const todoId = req.params.id;
 
     const todo = await Todo.findById(todoId);
