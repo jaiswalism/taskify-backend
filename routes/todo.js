@@ -12,7 +12,7 @@ router.post("/", adminMiddleware, async (req, res) => {
     const validateBody = z.object({
       title : z.string().min(3).max(50),
       description : z.string().min(3).max(100),
-      tag : z.enum(["Low", "Medium", "High"]),
+      tag : z.enum(["Low", "Medium", "Urgent"]),
       deadline : z.string(),
       section : z.enum(["todo", "inProgress", "underReview", "finished"]) 
     })
@@ -57,7 +57,7 @@ router.put("/", adminMiddleware, async (req, res) => {
       description : z.string().min(3).max(100),
       newTitle : z.string().min(3).max(50),
       newDescription : z.string().min(3).max(100),
-      newTag : z.enum(["Low", "Medium", "High"]),
+      newTag : z.enum(["Low", "Medium", "Urgent"]),
       newDeadline : z.string(),
       newSection : z.enum(["todo", "inProgress", "underReview", "finished"]) 
     })
@@ -112,7 +112,7 @@ router.delete("/", adminMiddleware, async (req, res) => {
     const validateBody = z.object({
       title : z.string().min(3).max(50),
       description : z.string().min(3).max(100),
-      tag : z.enum(["Low", "Medium", "High"]),
+      tag : z.enum(["Low", "Medium", "Urgent"]),
     })
 
     const parsedBody = validateBody.safeParse(req.body);
